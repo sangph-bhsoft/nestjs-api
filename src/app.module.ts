@@ -10,6 +10,7 @@ import { CategoryModule } from './category/category.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { ProductModule } from './product/product.module';
+// import { AuthModule } from './shared/auth/auth.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { ProductModule } from './product/product.module';
     UserModule,
     CategoryModule,
     ProductModule,
+    // AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

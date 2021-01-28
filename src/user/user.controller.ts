@@ -1,14 +1,22 @@
+import { UserListVm } from './models/view-models/user-list-vm.model';
+import { RolesGuard } from './../shared/guards/roles.guards';
+import { JwtAuthGuard } from './../shared/guards/jwt-auth.guard';
+import { UserRole } from './models/user-role.enum';
+import { Roles } from './../shared/decorators/roles.decorators';
 import {
   Body,
   Controller,
   Get,
   HttpException,
   HttpStatus,
+  ParseIntPipe,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
@@ -22,8 +30,10 @@ import { LoginVm } from './models/view-models/login-vm.model';
 import { RegisterVm } from './models/view-models/register-vm.model';
 import { UserVm } from './models/view-models/user-vm.model';
 import { UserService } from './user.service';
+import { map } from 'lodash';
 
 @Controller('user')
+@ApiBearerAuth()
 export class UserController {
   constructor(private readonly _userService: UserService) {}
 
@@ -72,12 +82,44 @@ export class UserController {
     return this._userService.login(vm);
   }
   @Get()
+  @Roles(UserRole.Admin, UserRole.User)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiBadRequestResponse({ type: ApiException })
-  @ApiOperation(getOperationId(User.modelName, 'GetAll'))
-  @ApiQuery({ name: 'page', required: true })
-  async get(@Query() page?: number) {
-    console.log(page);
+  @ApiOkResponse({ type: UserListVm })
+  @ApiOperation(getOperationId(User.modelName, 'GetListPaging'))
+  @ApiQuery({ name: 'page', required: false })
+  @ApiQuery({ name: 'pageSize', required: false })
+  @ApiQuery({ name: 'keyword', required: false })
+  async getList(
+    @Query('page', ParseIntPipe) page?: number,
+    @Query('pageSize', ParseIntPipe) pageSize?: number,
+    @Query('keyword') keyword?: string,
+  ): Promise<UserListVm> {
+    try {
+      const filter = {};
 
-    return this._userService.getAll();
+      if (keyword) {
+        filter['$or'] = [
+          { name: { $regex: keyword, $options: 'i' } },
+          { email: { $regex: keyword, $options: 'i' } },
+        ];
+      }
+
+      const result = await this._userService.findAllPaging(
+        filter,
+        page,
+        pageSize,
+      );
+      const items = await this._userService.map<UserVm[]>(
+        map(result.items, (item) => item.toJSON()),
+        true,
+      );
+      return {
+        ...result,
+        items,
+      };
+    } catch (e) {
+      throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }

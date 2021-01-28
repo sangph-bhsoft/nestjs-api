@@ -8,4 +8,5 @@ export class ProductVm extends BaseModelVM {
   @ApiPropertyOptional() status: boolean;
   @ApiPropertyOptional() category_id: string;
   @ApiPropertyOptional() price: number;
+  @ApiPropertyOptional() category_name?: string;
 }

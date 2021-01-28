@@ -9,14 +9,4 @@ export class AppController {
   getH(): string {
     return this.appService.getHello();
   }
-
-  @Get('uploads/images/products/:image')
-  async serveImage(@Param('image') image, @Res() res): Promise<any> {
-    res.sendFile(image, { root: 'uploads/images/products/' });
-  }
-
-  @Get('uploads/images/category/:image')
-  async serveImageProduct(@Param('image') image, @Res() res): Promise<any> {
-    res.sendFile(image, { root: 'uploads/images/category/' });
-  }
 }

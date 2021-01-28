@@ -3,7 +3,8 @@ import { ConfigurationService } from './configuration/configuration.service';
 import { MapperService } from './mapper/mapper.service';
 import { AuthService } from './auth/auth.service';
 import { UserModule } from '../user/user.module';
-import { JwtStrategy } from './strategies/jwt-strategy.service';
+import { JwtStrategy } from './auth/strategies/jwt-strategy.service';
+// import { AuthModule } from './auth/auth.module';
 
 @Global()
 @Module({

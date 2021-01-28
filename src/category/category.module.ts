@@ -13,6 +13,7 @@ import { Category } from './models/category.model';
       },
     ]),
   ],
+  exports: [CategoryService],
   providers: [CategoryService],
   controllers: [CategoryController],
 })

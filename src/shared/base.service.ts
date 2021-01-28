@@ -52,7 +52,7 @@ export class BaseService<T extends Typegoose> {
     const items = await query;
     const itemsCount = await query.count();
     const count = await this._model.count(filter);
-    const totalPage = Math.round(count / pageSize);
+    const totalPage = Math.ceil(count / pageSize);
     return {
       page,
       pageSize,
@@ -79,7 +79,10 @@ export class BaseService<T extends Typegoose> {
     item: UpdateQuery<InstanceType<T>>,
   ): Promise<InstanceType<T>> {
     return this._model
-      .findByIdAndUpdate(this.toObjectId(id), item, { new: true })
+      .findByIdAndUpdate(this.toObjectId(id), item, {
+        new: true,
+        useFindAndModify: false,
+      })
       .exec();
   }
 

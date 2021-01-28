@@ -31,6 +31,8 @@ async function bootstrap() {
     },
   });
 
+  app.enableCors();
+
   app.useGlobalFilters(new HttpExceptionFilter());
 
   await app.listen(AppModule.port);

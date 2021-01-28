@@ -1,5 +1,6 @@
 import { BaseModel, schemaOptions } from '../../shared/base.model';
-import { ModelType, prop } from 'typegoose';
+import { ModelType, prop, Ref } from 'typegoose';
+import { Category } from 'src/category/models/category.model';
 
 export class Product extends BaseModel<Product> {
   @prop({
@@ -22,13 +23,17 @@ export class Product extends BaseModel<Product> {
 
   @prop({
     required: [true, 'product category is required'],
+    ref: 'Category',
   })
-  category_id: string;
+  category: Ref<Category>;
 
   @prop({
     default: true,
   })
   status?: boolean;
+
+  @prop()
+  category_name?: string;
 
   static get model(): ModelType<Product> {
     return new Product().getModelForClass(Product, {

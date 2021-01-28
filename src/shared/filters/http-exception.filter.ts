@@ -13,11 +13,11 @@ export class HttpExceptionFilter implements ExceptionFilter {
       }
     }
 
-    res.status(error.getStatus()).json({
-      statusCode: error.getStatus(),
-      error: error.response.name || error.name,
-      message: error.response.message || error.message,
-      errors: error.response.errors || null,
+    res.status(error.statusCode || error.getStatus()).json({
+      statusCode: error.statusCode || error.getStatus(),
+      error: (error.response && error.response.name) || error.name,
+      message: (error.response && error.response.message) || error.message,
+      errors: (error.response && error.response.errors) || null,
       timestamp: new Date().toISOString(),
       path: req ? req.url : null,
     });

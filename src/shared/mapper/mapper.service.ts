@@ -19,6 +19,11 @@ export class MapperService {
       .createMap('User', 'UserVm')
       .forSourceMember('_id', (opts) => opts.ignore())
       .forSourceMember('password', (opts) => opts.ignore());
+
+    config
+      .createMap('User[]', 'UserVm[]')
+      .forSourceMember('_id', (opts) => opts.ignore())
+      .forSourceMember('password', (opts) => opts.ignore());
     config
       .createMap('Category', 'CategoryVm')
       .forSourceMember('_id', (opts) => opts.ignore());
